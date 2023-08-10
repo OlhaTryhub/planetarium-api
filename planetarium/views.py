@@ -10,6 +10,7 @@ from planetarium.models import (
     Ticket,
     Reservation
 )
+from planetarium.permissions import IsAdminOrIfAuthenticatedReadOnly
 from planetarium.serializers import (
     ReservationSerializer,
     TicketSerializer,
@@ -35,6 +36,7 @@ class AstronomyShowViewSet(viewsets.ModelViewSet):
 class ShowSessionViewSet(viewsets.ModelViewSet):
     queryset = ShowSession.objects.all()
     serializer_class = ShowSessionSerializer
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
 
 class PlanetariumDomeViewSet(viewsets.ModelViewSet):

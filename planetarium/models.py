@@ -59,8 +59,16 @@ class Reservation(models.Model):
 class Ticket(models.Model):
     row = models.PositiveIntegerField()
     seat = models.PositiveIntegerField()
-    show_session = models.ForeignKey(to=ShowSession, on_delete=models.DO_NOTHING)
-    reservation = models.ForeignKey(to=Reservation, on_delete=models.CASCADE)
+    show_session = models.ForeignKey(
+        to=ShowSession,
+        on_delete=models.DO_NOTHING,
+        related_name="tickets"
+    )
+    reservation = models.ForeignKey(
+        to=Reservation,
+        on_delete=models.CASCADE,
+        related_name="tickets"
+    )
 
     def __str__(self) -> str:
         return (f"Place: (row: {self.row}, seat: {self.seat}) "
