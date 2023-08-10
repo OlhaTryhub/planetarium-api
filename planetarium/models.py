@@ -12,10 +12,7 @@ class ShowTheme(models.Model):
 class AstronomyShow(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    show_theme = models.ManyToManyField(
-        to=ShowTheme,
-        related_name="astronomy_shows"
-    )
+    show_theme = models.ManyToManyField(to=ShowTheme, related_name="astronomy_shows")
 
 
 class PlanetariumDome(models.Model):
@@ -27,11 +24,11 @@ class PlanetariumDome(models.Model):
 class ShowSession(models.Model):
     astronomy_show = models.ForeignKey(
         to=AstronomyShow,
-        on_delete=models.SET_NULL
+        on_delete=models.DO_NOTHING
     )
     planetarium_dome = models.ForeignKey(
         to=PlanetariumDome,
-        on_delete=models.SET_NULL
+        on_delete=models.DO_NOTHING
     )
     show_time = models.DateTimeField()
 
@@ -44,9 +41,5 @@ class Reservation(models.Model):
 class Ticket(models.Model):
     row = models.PositiveIntegerField()
     seat = models.PositiveIntegerField()
-    show_session = models.ForeignKey(
-        to=ShowSession,
-        on_delete=models.DO_NOTHING
-    )
+    show_session = models.ForeignKey(to=ShowSession, on_delete=models.DO_NOTHING)
     reservation = models.ForeignKey(to=Reservation, on_delete=models.CASCADE)
-
