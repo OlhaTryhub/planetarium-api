@@ -21,4 +21,8 @@ urlpatterns = [
         name="redoc",
     ),
     path("api/user/", include("user.urls", namespace="user")),
+    path(
+        "api/planetarium/",
+        include("planetarium.urls", namespace="planetarium")
+    ),
 ]

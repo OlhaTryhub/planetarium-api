@@ -1,25 +1,46 @@
 from rest_framework import serializers
 
+from planetarium.models import (
+    ShowTheme,
+    AstronomyShow,
+    ShowSession,
+    PlanetariumDome,
+    Ticket,
+    Reservation
+)
+
 
 class ReservationSerializer(serializers.ModelSerializer):
-    pass
+    class Meta:
+        model = Reservation
+        fields = "__all__"
 
 
 class TicketSerializer(serializers.ModelSerializer):
-    pass
+    class Meta:
+        model = Ticket
+        fields = "__all__"
 
 
 class PlanetariumDomeSerializer(serializers.ModelSerializer):
-    pass
+    class Meta:
+        model = PlanetariumDome
+        fields = "__all__"
 
 
 class ShowSessionSerializer(serializers.ModelSerializer):
-    pass
+    class Meta:
+        model = ShowSession
+        fields = "__all__"
 
 
 class AstronomyShowSerializer(serializers.ModelSerializer):
-    pass
+    class Meta:
+        model = AstronomyShow
+        fields = "__all__"
 
 
 class ShowThemeSerializer(serializers.ModelSerializer):
-    pass
+    class Meta:
+        model = ShowTheme
+        fields = "__all__"
