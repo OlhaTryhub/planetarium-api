@@ -20,7 +20,6 @@ from planetarium.serializers import (
 )
 
 
-
 class ShowThemeViewSet(viewsets.ModelViewSet):
     queryset = ShowTheme.objects.all()
     serializer_class = ShowThemeSerializer
