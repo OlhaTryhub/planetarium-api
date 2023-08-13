@@ -103,6 +103,7 @@ class ShowSessionListSerializer(serializers.ModelSerializer):
     taken_places = TicketSeatsSerializer(
         source="tickets", many=True, read_only=True
     )
+    tickets_available = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = ShowSession
@@ -112,6 +113,7 @@ class ShowSessionListSerializer(serializers.ModelSerializer):
             "show_time",
             "description",
             "dome_name",
+            "tickets_available",
             "taken_places",
         )
 
