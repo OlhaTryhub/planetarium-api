@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 
 from planetarium.models import (
     ShowTheme,
@@ -10,15 +11,27 @@ from planetarium.models import (
 )
 
 
-class ReservationSerializer(serializers.ModelSerializer):
+class TicketSerializer(serializers.ModelSerializer):
+    def validate(self, attrs):
+        data = super(TicketSerializer, self).validate(attrs=attrs)
+        Ticket.validate_ticket(
+            attrs["row"],
+            attrs["seat"],
+            attrs["show_session"].planetarium_dome,
+            ValidationError
+        )
+        return data
+
     class Meta:
-        model = Reservation
+        model = Ticket
         fields = "__all__"
 
 
-class TicketSerializer(serializers.ModelSerializer):
+class ReservationSerializer(serializers.ModelSerializer):
+    tickets = TicketSerializer(many=True, read_only=False, allow_empty=False)
+
     class Meta:
-        model = Ticket
+        model = Reservation
         fields = "__all__"
 
 
@@ -28,9 +41,9 @@ class PlanetariumDomeSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class ShowSessionSerializer(serializers.ModelSerializer):
+class ShowThemeSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ShowSession
+        model = ShowTheme
         fields = "__all__"
 
 
@@ -40,7 +53,42 @@ class AstronomyShowSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class ShowThemeSerializer(serializers.ModelSerializer):
+class ShowThemesListSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShowTheme
+        fields = ("name",)
+
+
+class ShowSessionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ShowSession
         fields = "__all__"
+
+
+class ShowSessionListSerializer(serializers.ModelSerializer):
+    title = serializers.CharField(
+        source="astronomy_show.title",
+        read_only=True
+    )
+    description = serializers.CharField(
+        source="astronomy_show.description",
+        read_only=True
+    )
+    show_themes = serializers.StringRelatedField(
+        source="astronomy_show.show_theme", many=True, read_only=True
+    )
+    dome_name = serializers.CharField(
+        source="planetarium_dome.name",
+        read_only=True
+    )
+    #  TODO: додати кількість вільних місць
+
+    class Meta:
+        model = ShowSession
+        fields = (
+            "title",
+            "show_themes",
+            "show_time",
+            "description",
+            "dome_name",
+        )
