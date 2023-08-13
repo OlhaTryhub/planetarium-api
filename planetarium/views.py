@@ -19,7 +19,7 @@ from planetarium.serializers import (
     PlanetariumDomeSerializer,
     ShowSessionSerializer,
     AstronomyShowSerializer,
-    ShowThemeSerializer, ShowSessionListSerializer
+    ShowThemeSerializer, ShowSessionListSerializer, ReservationListSerializer
 )
 
 
@@ -80,3 +80,9 @@ class ReservationViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return ReservationListSerializer
+
+        return ReservationSerializer
