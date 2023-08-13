@@ -59,12 +59,6 @@ class PlanetariumDomeViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAdminUser,)
 
 
-class TicketViewSet(viewsets.ModelViewSet):
-    queryset = Ticket.objects.all()
-    serializer_class = TicketSerializer
-    permission_classes = (IsAuthenticated,)
-
-
 class ReservationPagination(PageNumberPagination):
     page_size = 10
     max_page_size = 100
