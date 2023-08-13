@@ -11,3 +11,19 @@ class IsAdminOrIfAuthenticatedReadOnly(BasePermission):
             )
             or (request.user and request.user.is_staff)
         )
+
+
+class IsClientUserOrIsAdminReadOnly(BasePermission):
+    def has_permission(self, request, view):
+        return bool(
+            (
+                request.method in SAFE_METHODS
+                and request.user
+                and request.user.is_staff
+                and request.user.is_authenticated
+            )
+            or (request.method in SAFE_METHODS + ("POST",)
+                and request.user
+                and request.user.is_authenticated
+                and not request.user.is_staff)
+        )
