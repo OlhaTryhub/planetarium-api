@@ -1,8 +1,7 @@
-from django.db.models import QuerySet, F, Count
-from django.shortcuts import render
+from django.db.models import F, Count
 from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework.permissions import IsAdminUser
 
 from planetarium.models import (
     ShowTheme,
@@ -11,7 +10,10 @@ from planetarium.models import (
     PlanetariumDome,
     Reservation
 )
-from planetarium.permissions import IsAdminOrIfAuthenticatedReadOnly, IsClientUserOrIsAdminReadOnly
+from planetarium.permissions import (
+    IsAdminOrIfAuthenticatedReadOnly,
+    IsClientUserOrIsAdminReadOnly
+)
 from planetarium.serializers import (
     ReservationSerializer,
     PlanetariumDomeSerializer,
