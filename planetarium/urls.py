@@ -6,7 +6,6 @@ from planetarium.views import (
     AstronomyShowViewSet,
     ShowSessionViewSet,
     PlanetariumDomeViewSet,
-    TicketViewSet,
     ReservationViewSet,
 )
 
@@ -18,7 +17,6 @@ router.register("show_themes", ShowThemeViewSet)
 router.register("astronomy_shows", AstronomyShowViewSet)
 router.register("show_sessions", ShowSessionViewSet)
 router.register("planetarium_domes", PlanetariumDomeViewSet)
-router.register("tickets", TicketViewSet)
 router.register("reservations", ReservationViewSet)
 
 urlpatterns = [path("", include(router.urls))]
