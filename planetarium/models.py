@@ -114,3 +114,7 @@ class Ticket(models.Model):
         return super(Ticket, self).save(
             force_insert, force_update, using, update_fields
         )
+
+    class Meta:
+        unique_together = ("show_session", "row", "seat")
+        ordering = ["row", "seat"]
