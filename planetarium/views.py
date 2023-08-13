@@ -9,13 +9,11 @@ from planetarium.models import (
     AstronomyShow,
     ShowSession,
     PlanetariumDome,
-    Ticket,
     Reservation
 )
-from planetarium.permissions import IsAdminOrIfAuthenticatedReadOnly
+from planetarium.permissions import IsAdminOrIfAuthenticatedReadOnly, IsClientUserOrIsAdminReadOnly
 from planetarium.serializers import (
     ReservationSerializer,
-    TicketSerializer,
     PlanetariumDomeSerializer,
     ShowSessionSerializer,
     AstronomyShowSerializer,
@@ -71,7 +69,7 @@ class ReservationViewSet(viewsets.ModelViewSet):
     )
     serializer_class = ReservationSerializer
     pagination_class = ReservationPagination
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsClientUserOrIsAdminReadOnly,)
 
     def get_queryset(self):
         if not self.request.user.is_staff:
