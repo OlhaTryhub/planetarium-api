@@ -27,6 +27,12 @@ class TicketSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class TicketSeatsSerializer(TicketSerializer):
+    class Meta:
+        model = Ticket
+        fields = ("row", "seat")
+
+
 class ReservationSerializer(serializers.ModelSerializer):
     tickets = TicketSerializer(many=True, read_only=False, allow_empty=False)
 
@@ -65,12 +71,6 @@ class ShowSessionSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class TicketSeatsSerializer(TicketSerializer):
-    class Meta:
-        model = Ticket
-        fields = ("row", "seat")
-
-
 class ShowSessionListSerializer(serializers.ModelSerializer):
     title = serializers.CharField(
         source="astronomy_show.title",
@@ -101,3 +101,11 @@ class ShowSessionListSerializer(serializers.ModelSerializer):
             "dome_name",
             "taken_places",
         )
+
+
+class TicketListSerializer(TicketSerializer):
+    show_session = ShowSessionListSerializer(many=False, read_only=True)
+
+
+class ReservationListSerializer(ReservationSerializer):
+    tickets = TicketListSerializer(many=True, read_only=True)

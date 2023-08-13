@@ -1,6 +1,7 @@
 from django.db.models import QuerySet, F, Count
 from django.shortcuts import render
 from rest_framework import viewsets
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 
 from planetarium.models import (
@@ -64,9 +65,18 @@ class TicketViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
 
+class ReservationPagination(PageNumberPagination):
+    page_size = 10
+    max_page_size = 100
+
+
 class ReservationViewSet(viewsets.ModelViewSet):
-    queryset = Reservation.objects.all()
+    queryset = Reservation.objects.prefetch_related(
+        "tickets__show_session__astronomy_show",
+        "tickets__show_session__planetarium_dome"
+    )
     serializer_class = ReservationSerializer
+    pagination_class = ReservationPagination
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
