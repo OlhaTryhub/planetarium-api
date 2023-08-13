@@ -65,6 +65,12 @@ class ShowSessionSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class TicketSeatsSerializer(TicketSerializer):
+    class Meta:
+        model = Ticket
+        fields = ("row", "seat")
+
+
 class ShowSessionListSerializer(serializers.ModelSerializer):
     title = serializers.CharField(
         source="astronomy_show.title",
@@ -81,7 +87,9 @@ class ShowSessionListSerializer(serializers.ModelSerializer):
         source="planetarium_dome.name",
         read_only=True
     )
-    #  TODO: додати кількість вільних місць
+    taken_places = TicketSeatsSerializer(
+        source="tickets", many=True, read_only=True
+    )
 
     class Meta:
         model = ShowSession
@@ -91,4 +99,5 @@ class ShowSessionListSerializer(serializers.ModelSerializer):
             "show_time",
             "description",
             "dome_name",
+            "taken_places",
         )

@@ -1,4 +1,4 @@
-from django.db.models import QuerySet
+from django.db.models import QuerySet, F, Count
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
@@ -36,8 +36,12 @@ class AstronomyShowViewSet(viewsets.ModelViewSet):
 
 class ShowSessionViewSet(viewsets.ModelViewSet):
     queryset = ShowSession.objects.prefetch_related(
-        "astronomy_show",
-        "planetarium_dome"
+        "astronomy_show", "planetarium_dome"
+    ).annotate(
+        tickets_available=(
+            F("planetarium_dome__rows") * F("planetarium_dome__seats_in_row")
+            - Count("tickets")
+        )
     )
     serializer_class = ShowSessionSerializer
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
@@ -46,7 +50,6 @@ class ShowSessionViewSet(viewsets.ModelViewSet):
         if self.action == "list":
             return ShowSessionListSerializer
         return ShowSessionSerializer
-
 
 
 class PlanetariumDomeViewSet(viewsets.ModelViewSet):
