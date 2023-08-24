@@ -1,11 +1,10 @@
+import os
 from datetime import timedelta
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = (
-    "django-insecure-(mp#(*^82un$%02&c=7-%-^(vefbccddup%f$m%p7#f4kwjo4d"
-)
+SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 
 DEBUG = True
 
