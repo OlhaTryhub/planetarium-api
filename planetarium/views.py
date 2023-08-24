@@ -1,18 +1,20 @@
 from django.db.models import F, Count
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAdminUser
+from rest_framework.response import Response
+from django.utils import timezone
 
 from planetarium.models import (
     ShowTheme,
     AstronomyShow,
     ShowSession,
     PlanetariumDome,
-    Reservation
+    Reservation, Ticket
 )
 from planetarium.permissions import (
     IsAdminOrIfAuthenticatedReadOnly,
-    IsClientUserOrIsAdminReadOnly
+    IsAdminOrIfAuthenticatedReadCreateDeleteOnly
 )
 from planetarium.serializers import (
     ReservationSerializer,
@@ -71,7 +73,7 @@ class ReservationViewSet(viewsets.ModelViewSet):
     )
     serializer_class = ReservationSerializer
     pagination_class = ReservationPagination
-    permission_classes = (IsClientUserOrIsAdminReadOnly,)
+    permission_classes = (IsAdminOrIfAuthenticatedReadCreateDeleteOnly,)
 
     def get_queryset(self):
         if not self.request.user.is_staff:
@@ -80,6 +82,24 @@ class ReservationViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        tickets = Ticket.objects.prefetch_related(
+            "show_session", "reservation"
+        ).filter(reservation=instance)
+        current_datetime = timezone.now()
+
+        if not self.request.user.is_staff:
+            for ticket in tickets:
+                if ticket.show_session.show_time < current_datetime:
+                    return Response(
+                        {"error": "Cannot delete reservation for past shows."},
+                        status=status.HTTP_403_FORBIDDEN
+                    )
+
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     def get_serializer_class(self):
         if self.action == "list":
