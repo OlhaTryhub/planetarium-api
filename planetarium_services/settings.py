@@ -11,7 +11,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 INTERNAL_IPS = [
-    "127.0.0.1",
+    "127.0.0.1", ""
 ]
 
 INSTALLED_APPS = [
@@ -62,8 +62,11 @@ WSGI_APPLICATION = "planetarium_services.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": os.environ.get("POSTGRES_ENGINE", "django.db.backends.sqlite3"),
+        "NAME": os.environ.get("POSTGRES_DB", BASE_DIR / "db.sqlite3"),
+        "HOST": os.environ.get("POSTGRES_HOST"),
+        "USER": os.environ.get("POSTGRES_USER"),
+        "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
     }
 }
 
@@ -110,7 +113,7 @@ SPECTACULAR_SETTINGS = {
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "Europe/Kyiv"
+TIME_ZONE = "Europe/Kiev"
 
 USE_I18N = True
 
